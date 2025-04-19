@@ -1,0 +1,53 @@
+import { GroupMessage, NCWebsocket, PrivateFriendMessage, PrivateGroupMessage, Structs } from 'node-napcat-ts'
+import { BaseCommand } from './decorators.js'
+import { EnhancedMessage, Message } from '../typings/Message.js'
+
+export class CommandManager {
+  private commands: Map<string, { handler: Function, permission: string }> = new Map()
+  private modules: BaseCommand[] = []
+
+  registerModule(module: BaseCommand) {
+    this.modules.push(module)
+    const moduleClass = module.constructor as any
+
+    if (moduleClass.commands) {
+      for (const [name, command] of moduleClass.commands.entries()) {
+        const permission = moduleClass.permissions?.get(command.handler.name) || ''
+        this.commands.set(name, {
+          handler: command.handler.bind(module),
+          permission
+        })
+      }
+    }
+
+    module.initialize()
+  }
+
+  async handleCommand(bot: NCWebsocket, message: EnhancedMessage, command: string, args: string[]) {
+    const cmd = this.commands.get(command)
+    if (!cmd) {
+      await message.reply([
+        Structs.text("未知命令")
+      ])
+    }
+
+    // TODO: 实现权限检查
+    // if (cmd.permission && !await this.checkPermission(message.author.id, cmd.permission)) {
+    //     await ws.sendMessage(message.channel_id, '你没有执行此命令的权限')
+    //     return
+    // }
+    if (cmd) {
+      try {
+        await cmd.handler(bot, message, args)
+      } catch (error) {
+        console.error('命令执行错误:', error)
+        await bot.send_msg({
+          user_id: message.sender.user_id,
+          message: [
+            Structs.text("命令执行出错")
+          ]
+        })
+      }
+    }
+  }
+}
