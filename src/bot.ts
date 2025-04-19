@@ -3,6 +3,9 @@ import { config } from './config.js'
 import { CommandManager } from './core/commandManager.js'
 import { ModuleLoader } from './core/moduleLoader.js'
 import { Message, EnhancedMessage } from './typings/Message.js'
+import { createLogger } from './logger.js'
+
+const logger = createLogger('bot')
 
 export function connect() {
   try {
@@ -41,9 +44,9 @@ export function connect() {
     })
 
     bot.connect()
-    console.log('Bot connected successfully')
+    logger.info("Onebot 连接成功")
   } catch (error) {
-    console.error('Failed to connect:', error)
+    logger.error("Onebot 连接失败：", error)
     process.exit(1)
   }
 }

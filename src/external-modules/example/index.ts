@@ -5,7 +5,6 @@ import { EnhancedMessage } from '../../typings/Message.js'
 @Module('external-example')
 export default class ExternalExampleModule extends BaseCommand {
   initialize() {
-    console.log('External example module initialized')
   }
 
   @Command('hello', '打招呼')

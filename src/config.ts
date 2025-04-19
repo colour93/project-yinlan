@@ -1,5 +1,8 @@
 import { z } from 'zod';
 import fs from 'fs';
+import { createLogger } from './logger.js';
+
+const logger = createLogger('config');
 
 const configSchema = z.object({
   ob: z.object({
@@ -21,8 +24,10 @@ const configSchema = z.object({
 });
 
 if (!fs.existsSync('./config.json')) {
-
+  logger.error('请先创建 config.json')
+  throw new Error('config.json not found')
 }
+
 const configRaw = fs.readFileSync('./config.json', 'utf-8');
 const configParsed = JSON.parse(configRaw);
 

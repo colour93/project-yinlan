@@ -105,7 +105,7 @@ export function Permission(permission: string) {
 // 模块装饰器
 export function Module(name: string) {
   return function (constructor: Function) {
-    constructor.prototype.moduleName = name
+    (constructor as any).moduleName = name
   }
 }
 
@@ -113,7 +113,11 @@ export function Module(name: string) {
 export abstract class BaseCommand {
   static commands: Map<string, { handler: CommandHandler, description: string, name: string }>
   static permissions: Map<string, string>
-  moduleName!: string
+  static moduleName: string
+
+  get moduleName(): string {
+    return (this.constructor as any).moduleName
+  }
 
   abstract initialize(): void
 } 

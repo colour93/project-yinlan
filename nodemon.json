@@ -1,7 +1,7 @@
 {
   "watch": [
-    "dist"
+    "src"
   ],
-  "ext": "js",
-  "exec": "node dist/index.js"
+  "ext": "ts",
+  "exec": "ts-node-esm src/index.ts"
 }

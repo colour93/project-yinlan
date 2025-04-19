@@ -1,6 +1,9 @@
 import { GroupMessage, NCWebsocket, PrivateFriendMessage, PrivateGroupMessage, Structs } from 'node-napcat-ts'
 import { BaseCommand } from './decorators.js'
 import { EnhancedMessage, Message } from '../typings/Message.js'
+import { createLogger } from '../logger.js'
+
+const logger = createLogger('core/command-manager')
 
 export class CommandManager {
   private commands: Map<string, { handler: Function, permission: string }> = new Map()
@@ -12,6 +15,7 @@ export class CommandManager {
 
     if (moduleClass.commands) {
       for (const [name, command] of moduleClass.commands.entries()) {
+        logger.debug(`注册命令: ${name}`)
         const permission = moduleClass.permissions?.get(command.handler.name) || ''
         this.commands.set(name, {
           handler: command.handler.bind(module),
@@ -40,7 +44,7 @@ export class CommandManager {
       try {
         await cmd.handler(bot, message, args)
       } catch (error) {
-        console.error('命令执行错误:', error)
+        logger.error('命令执行错误: ', error)
         await bot.send_msg({
           user_id: message.sender.user_id,
           message: [

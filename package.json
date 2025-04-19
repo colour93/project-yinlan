@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "nodemon --exec node --loader ts-node/esm -r reflect-metadata src/index.ts",
-    "start": "concurrently \"tsc --watch\" \"nodemon\"",
+    "dev": "export LOG_LEVEL=DEBUG && nodemon",
+    "start": "ts-node-esm src/index.ts",
     "build": "tsc",
     "prod": "node dist/index.js",
     "clean": "rm -rf dist"
@@ -14,14 +14,15 @@
   "license": "ISC",
   "dependencies": {
     "node-napcat-ts": "^0.4.10",
+    "pino": "^9.6.0",
     "reflect-metadata": "^0.2.2",
     "zod": "^3.24.3"
   },
   "type": "module",
   "devDependencies": {
     "@types/node": "^22.14.1",
-    "concurrently": "^9.1.2",
     "nodemon": "^3.1.9",
+    "pino-pretty": "^13.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   }
