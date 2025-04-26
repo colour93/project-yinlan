@@ -1,4 +1,4 @@
-import { BaseCommand, Command, Module, Message, Args, Permission } from '../../core/decorators.js'
+import { BaseCommand, Command, Module, Args, Permission, Message } from '../../core/decorators.js'
 import { Structs } from 'node-napcat-ts'
 import { EnhancedMessage } from '../../typings/Message.js'
 
@@ -13,7 +13,7 @@ export default class ExternalExampleModule extends BaseCommand {
     @Message() message: EnhancedMessage,
   ) {
     const name = message.sender.nickname
-    await message.reply([
+    await message.quick_action([
       Structs.text(`你好，${name}！`)
     ])
   }

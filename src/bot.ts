@@ -46,7 +46,7 @@ export function connect() {
     bot.connect()
     logger.info("Onebot 连接成功")
   } catch (error) {
-    logger.error("Onebot 连接失败：", error)
+    logger.error("Onebot 连接失败: ", error)
     process.exit(1)
   }
 }

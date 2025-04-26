@@ -33,18 +33,19 @@ export class ModuleLoader {
       // 加载内置模块
       const internalModules = await this.loadModulesFromPath(this.modulesPath)
       for (const module of internalModules) {
-        logger.info('加载内部模块：' + module.moduleName || 'unknown')
+        logger.info('加载内部模块: ' + module.moduleName || 'unknown')
         this.commandManager.registerModule(module)
       }
 
       // 加载外部模块
       const externalModules = await this.loadModulesFromPath(this.externalModulesPath)
       for (const module of externalModules) {
-        logger.info('加载外部模块：' + module.moduleName || 'unknown')
+        logger.info('加载外部模块: ' + module.moduleName || 'unknown')
         this.commandManager.registerModule(module)
       }
     } catch (error) {
-      logger.error('加载模块时出错: ', error)
+      logger.error('加载模块时出错: ')
+      logger.error(error)
     }
   }
 
@@ -69,7 +70,8 @@ export class ModuleLoader {
               }
             }
           } catch (error) {
-            logger.error(`加载模块文件夹 ${item.name} 时出错:`, error)
+            logger.error(`加载模块文件夹 ${item.name} 时出错:`)
+            logger.error(error)
           }
         } else if (item.isFile() && item.name.endsWith('.js')) {
           // 如果是单个 js 文件，保持原有逻辑
@@ -87,13 +89,15 @@ export class ModuleLoader {
               }
             }
           } catch (error) {
-            logger.error(`加载模块 ${item.name} 时出错:`, error)
+            logger.error(`加载模块 ${item.name} 时出错:`)
+            logger.error(error)
           }
         }
       }
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
-        logger.error(`读取模块目录 ${path} 时出错:`, error)
+        logger.error(`读取模块目录 ${path} 时出错:`)
+        logger.error(error)
       }
     }
     return modules

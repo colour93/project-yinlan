@@ -1,6 +1,6 @@
 import { GroupMessage, NCWebsocket, PrivateFriendMessage, PrivateGroupMessage, Structs } from 'node-napcat-ts'
 import { BaseCommand } from './decorators.js'
-import { EnhancedMessage, Message } from '../typings/Message.js'
+import { EnhancedMessage } from '../typings/Message.js'
 import { createLogger } from '../logger.js'
 
 const logger = createLogger('core/command-manager')
@@ -30,7 +30,7 @@ export class CommandManager {
   async handleCommand(bot: NCWebsocket, message: EnhancedMessage, command: string, args: string[]) {
     const cmd = this.commands.get(command)
     if (!cmd) {
-      await message.reply([
+      await message.quick_action([
         Structs.text("未知命令")
       ])
     }
@@ -41,16 +41,15 @@ export class CommandManager {
     //     return
     // }
     if (cmd) {
+      logger.debug(`执行命令: ${command}${args.length ? `参数: ${args.join(' ')}` : ''}`)
       try {
         await cmd.handler(bot, message, args)
       } catch (error) {
-        logger.error('命令执行错误: ', error)
-        await bot.send_msg({
-          user_id: message.sender.user_id,
-          message: [
-            Structs.text("命令执行出错")
-          ]
-        })
+        logger.error('命令执行错误: ')
+        logger.error(error)
+        await message.quick_action([
+          Structs.text("命令执行出错")
+        ])
       }
     }
   }

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import fs from 'fs';
 import { createLogger } from './logger.js';
+import { DataSourceOptions } from 'typeorm';
 
 const logger = createLogger('config');
 
@@ -20,7 +21,17 @@ const configSchema = z.object({
   }).refine(
     (data) => (data.baseUrl !== undefined) || (data.host !== undefined && data.port !== undefined && data.protocol !== undefined),
     { message: "必须提供 baseUrl 或 (host, port, protocol) 组合" }
-  )
+  ),
+  db: z.object({
+    type: z.enum(['sqlite', 'mysql', 'postgres']),
+    host: z.string().optional(),
+    port: z.number().optional(),
+    username: z.string().optional(),
+    password: z.string().optional(),
+    database: z.string(),
+    synchronize: z.boolean().optional(),
+    logging: z.boolean().optional()
+  }).optional()
 });
 
 if (!fs.existsSync('./config.json')) {
