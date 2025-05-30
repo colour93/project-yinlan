@@ -13,7 +13,7 @@ async function main() {
     await createDataSource()
     
     // 启动机器人
-    connect()
+    await connect()
   } catch (error) {
     console.error('应用启动失败:', error)
     process.exit(1)

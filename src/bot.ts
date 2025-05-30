@@ -7,7 +7,7 @@ import { createLogger } from './logger.js'
 
 const logger = createLogger('bot')
 
-export function connect() {
+export async function connect() {
   try {
     const bot = new NCWebsocket(config.ob, false)
     const commandManager = new CommandManager()
@@ -35,6 +35,17 @@ export function connect() {
             group_id: message.message_type === 'group' ? message.group_id : undefined,
             message: replyMessage
           });
+        },
+        getQuoteMessage: async () => {
+          const quoteMessage = message.message.find(m => m.type === 'reply')
+
+          if (!quoteMessage) return
+
+          const rawQuoteMessage = await bot.get_msg({
+            message_id: Number(quoteMessage.data.id)
+          })
+
+          return rawQuoteMessage
         }
       };
 
@@ -43,8 +54,10 @@ export function connect() {
       await commandManager.handleCommand(bot, enhancedMessage, command, args)
     })
 
-    bot.connect()
+    await bot.connect()
     logger.info("Onebot 连接成功")
+
+    logger.info(`好友 ${(await bot.get_friend_list()).length} 个`)
   } catch (error) {
     logger.error("Onebot 连接失败: ", error)
     process.exit(1)

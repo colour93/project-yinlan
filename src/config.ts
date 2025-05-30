@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import fs from 'fs';
 import { createLogger } from './logger.js';
-import { DataSourceOptions } from 'typeorm';
 
 const logger = createLogger('config');
 
@@ -31,7 +30,8 @@ const configSchema = z.object({
     database: z.string(),
     synchronize: z.boolean().optional(),
     logging: z.boolean().optional()
-  }).optional()
+  }).optional(),
+  modules: z.any().optional()
 });
 
 if (!fs.existsSync('./config.json')) {
@@ -43,3 +43,5 @@ const configRaw = fs.readFileSync('./config.json', 'utf-8');
 const configParsed = JSON.parse(configRaw);
 
 export const config = configSchema.parse(configParsed);
+
+export const modulesConfig = (config.modules ?? {}) as Record<string, any>;
