@@ -64,7 +64,7 @@ export const createDataSource = async () => {
   logger.info(`加载 ${entities.length} 个实体`)
 
   dataSource = new DataSource(config.db as unknown as (DataSourceOptions & undefined) || {
-    type: 'sqlite',
+    type: 'better-sqlite3',
     database: './data.db',
     entities,
     migrations,
